@@ -7,12 +7,11 @@ import simtk.openmm as mm
 import simtk.openmm.app as app
 import simtk.unit as unit
 
-sys.path.insert(0, "/wynton/home/sali/aplatham/Programs/OpenABC/")
-from openabc3.forcefields.parsers import MOFFParser
-from openabc3.forcefields.moff_mrg_model import MOFFMRGModel
-from openabc3.forcefields import functional_terms
-from openabc3.lib import _amino_acids, _kcal_to_kj
-from openabc3.utils.insert import insert_molecules
+from openabc.forcefields.parsers import MOFFParser
+from openabc.forcefields.moff_mrg_model import MOFFMRGModel
+from openabc.forcefields import functional_terms
+from openabc.lib import _amino_acids, _kcal_to_kj
+from openabc.utils.insert import insert_molecules
 
 """
 Define a new force field that use nonbonded terms from HPS while other terms from SMOG.
