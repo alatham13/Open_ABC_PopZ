@@ -10,7 +10,7 @@ All steps for performing simulations and analysis are demonstrated using the WT 
 and are implemented in OpenABC (https://github.com/ZhangGroup-MITChemistry/OpenABC/).
 
 ## Running HPS+SMOG simulations -------------------------
-Slab simulations of PopZ are run through a 4 step procedure. They begin from an alpha-fold structure of the PopZ mutant, in a set oligomerization state. The included scripts are an example for WT-PopZ trimer at 150 mM monovalent salt. 
+Slab simulations of PopZ are run through a 4 step procedure. They begin from an alpha-fold structure of the PopZ mutant, in a set oligomerization state. The included scripts are an example for WT-PopZ trimer at 150 mM monovalent salt, WT-PopZ trimer at 600 mM monovalent salt, WT-PopZ trimer at 150 mM monovalent salt and pH~4, and OD-PopZ trimer at 150 mM monovalent salt. 
 
 Dependencies: numpy, pandas, OpenMM, OpenABC (https://github.com/ZhangGroup-MITChemistry/OpenABC)
 
