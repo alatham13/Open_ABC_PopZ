@@ -1,8 +1,11 @@
 # Code to simulate and analyze PopZ condensates
 By Andrew P. Latham
 If you use this code, please cite:
-XXX
+
+Scholl et al., in preparation.
+
 Liu S, Wang C, Latham AP, Ding X, Zhang B OpenABC enables flexible, simplified, and efficient GPU accelerated simulations of biomolecular condensates. PLoS Comput Biol 2023, 19, e1011442.
+
 Regy RM, Thompson J, Kim YC, Mittal J Improved coarse-grained model for studying sequence dependent phase separation of disordered proteins. Protein Sci 2021, 30, 1371.
 
 Here, we walk through an example of the simulations and analysis used in our manuscript.
