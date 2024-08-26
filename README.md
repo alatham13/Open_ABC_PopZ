@@ -10,7 +10,7 @@ Regy RM, Thompson J, Kim YC, Mittal J Improved coarse-grained model for studying
 
 Here, we walk through an example of the simulations and analysis used in our manuscript.
 All steps for performing simulations and analysis are demonstrated using the WT PopZ system, 
-and are implemented in OpenABC (https://github.com/ZhangGroup-MITChemistry/OpenABC/).
+and are implemented in OpenABC (https://github.com/ZhangGroup-MITChemistry/OpenABC/), version 1.06.
 
 ## Running HPS+SMOG simulations -------------------------
 Slab simulations of PopZ are run through a 4 step procedure. They begin from an alpha-fold structure of the PopZ mutant, in a set oligomerization state. The included scripts are examples for WT-PopZ trimer at 150 mM monovalent salt, WT-PopZ trimer at 600 mM monovalent salt, WT-PopZ trimer at 150 mM monovalent salt and pH~4, and OD-PopZ trimer at 150 mM monovalent salt. 
