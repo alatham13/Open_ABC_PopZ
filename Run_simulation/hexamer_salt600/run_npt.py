@@ -21,6 +21,7 @@ Define a new force field that use nonbonded terms from HPS while other terms fro
 __location__ = '/.../openabc/forcefields' # path of openabc/forcefields
 
 class SMOGHPSModel(MOFFMRGModel):
+    # New force field that uses nonbonded terms from HPS with SMOG bonded terms
     # rewrite add_contacts, deprecate add_elec_switch, replace with add_elec
     # for add_contacts, only protein is supported, since RNA is not supported by SMOG
     def add_contacts(self, hydropathy_scale='Urry', epsilon=0.2 * _kcal_to_kj, mu=1, delta=0.08, force_group=2):
@@ -98,13 +99,8 @@ class SMOGHPSModel(MOFFMRGModel):
         charges = self.atoms['charge'].tolist()
         # convert charges from MOFF to HPS
         for i in range(len(charges)):
-            if charges[i]<0:
-                charges[i]=0
-            elif charges[i]==0.25:
-                charges[i]=1.0
-        print('Charges:')
-        print(charges)
-        print(np.sum(charges))
+            if charges[i]==0.25:
+                charges[i]=0.5
         force = functional_terms.dh_elec_term(charges, self.exclusions, self.use_pbc, ldby, dielectric_water,
                                               cutoff, force_group)
         self.system.addForce(force)
@@ -121,54 +117,54 @@ platform_name = 'CUDA'
 
 print('Successful import')
 
-# start from predicted PDB
-PopZ_parser = MOFFParser.from_atomistic_pdb('PopZ_FL_trimer_AF.pdb', 'PopZ_FL_trimer_CA.pdb')
+# start with predicted PDB from Alpha fold
+PopZ_parser = MOFFParser.from_atomistic_pdb('PopZ_FL_hexamer_AF.pdb', 'PopZ_FL_hexamer_CA.pdb')
 
-# PopZ_FL_trimer: we want to model the complex by rigidizing H3-H4 as a complex, and keeping H1 and H2 as a flexible helix.
+# PopZ_FL_hexamer: we want to model the complex by rigidizing H2-H3-H4 as a complex, and keeping H1 as a flexible helix.
 # Note: indexing goes across all residues, regardless of chain and starts at 0
 old_native_pairs = PopZ_parser.native_pairs.copy()
 new_native_pairs = pd.DataFrame(columns=old_native_pairs.columns)
 # full length of an individual monomer
 Nres=177
-# keep interactions between H3-H4 across chains
-H3H4_1=np.arange(135,171)
-print(H3H4_1)
-H3H4_2=H3H4_1+Nres
-H3H4_3=H3H4_1+Nres*2
-H3H4_tot=np.concatenate((H3H4_1,H3H4_2,H3H4_3))
-# keep interactions within H2 on the same chain
-H2_1=np.arange(101,128)
-H2_2=H2_1+Nres
-H2_3=H2_1+Nres*2
+# keep interactions between H2-H3-H4 across chains
+H2H3H4_1=np.arange(101,171)
+H2H3H4_2=H2H3H4_1+Nres
+H2H3H4_3=H2H3H4_1+Nres*2
+H2H3H4_4=H2H3H4_1+Nres*3
+H2H3H4_5=H2H3H4_1+Nres*4
+H2H3H4_6=H2H3H4_1+Nres*5
+H2H3H4_tot=np.concatenate((H2H3H4_1,H2H3H4_2,H2H3H4_3,H2H3H4_4,H2H3H4_5,H2H3H4_6))
+print(f'H2H3H4: \n{H2H3H4_tot}')
 # keep interactions within H1 on the same chain
 H1_1=np.arange(9,24)
-print(H1_1)
 H1_2=H1_1+Nres
-print(H1_2)
 H1_3=H1_1+Nres*2
-print(H1_3)
+H1_4=H1_1+Nres*2
+H1_5=H1_1+Nres*2
+H1_6=H1_1+Nres*2
+print(f'H1: \n{H1_1}\n{H1_2}\n{H1_3}\n{H1_4}\n{H1_5}\n{H1_6}')
 for i, row in old_native_pairs.iterrows():
     a1, a2 = int(row['a1']), int(row['a2'])
     if a1 > a2:
         a1, a2 = a2, a1
-    flag1=( (a1 in H2_1) and (a2 in H2_1) )
-    flag2=( (a1 in H2_2) and (a2 in H2_2) )
-    flag3=( (a1 in H2_3) and (a2 in H2_3) )
-    flag4=( (a1 in H3H4_tot) and (a2 in H3H4_tot) )
-    flag5=( (a1 in H1_1) and (a2 in H1_1) )
-    flag6=( (a1 in H1_2) and (a2 in H1_2) )
-    flag7=( (a1 in H1_3) and (a2 in H1_3) )
+    flag1=( (a1 in H2H3H4_tot) and (a2 in H2H3H4_tot) )
+    flag2=( (a1 in H1_1) and (a2 in H1_1) )
+    flag3=( (a1 in H1_2) and (a2 in H1_2) )
+    flag4=( (a1 in H1_3) and (a2 in H1_3) )
+    flag5=( (a1 in H1_4) and (a2 in H1_4) )
+    flag6=( (a1 in H1_5) and (a2 in H1_5) )
+    flag7=( (a1 in H1_6) and (a2 in H1_6) )
     if flag1 or flag2 or flag3 or flag4 or flag5 or flag6 or flag7:
         new_native_pairs.loc[len(new_native_pairs.index)] = row
 PopZ_parser.native_pairs = new_native_pairs
 PopZ_parser.parse_exclusions() # update exclusions based on the new native pairs
 
-# setup initial topology
+# setup initial topology, with 100 PopZ trimers
 n_mol = 100
 box_a=100
 box_b=100
 box_c=100
-insert_molecules('PopZ_FL_trimer_CA.pdb', 'start.pdb', n_mol, box=[box_a, box_b, box_c])
+insert_molecules('PopZ_FL_hexamer_CA.pdb', 'start.pdb', n_mol, box=[box_a, box_b, box_c])
 
 
 # set up protein model
@@ -182,12 +178,13 @@ top = app.PDBFile('start.pdb').getTopology()
 condensate.create_system(top, box_a=box_a, box_b=box_b, box_c=box_c, remove_cmmotion=True)
 # setup variables necessary for simulations
 T=150
-salt_concentration = 150*0.001
+salt_concentration = 600*0.001
 eps_w=80
 eps_0=8.8541878128*(10**-12)
 R=8.31446261815324
 F=9.64853321233100184*(10**4)
 # Caclulate and convert from SI units to nm
+# Note: the temperature (300 K) is built into the kappa term here, because the goal temperature is 300 K
 kappa=np.sqrt((eps_w*eps_0*R*300)/(2*(10**3)*(F**2)*salt_concentration) )*(10**9)
 Debye_L=kappa*unit.nanometer
 temperature = T*unit.kelvin
@@ -224,4 +221,4 @@ state = condensate.simulation.context.getState(getPositions=True, getVelocities=
 with open('npt.xml', 'w') as f:
     f.write(mm.XmlSerializer.serialize(state))
 # save final system
-condensate.save_system('PopZ_FL_trimer_system.xml')
+condensate.save_system('PopZ_FL_hexamer_system.xml')

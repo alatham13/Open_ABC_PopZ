@@ -18,7 +18,7 @@ Define a new force field that use nonbonded terms from HPS while other terms fro
 
 """
 
-__location__ = '/wynton/home/sali/aplatham/Programs/OpenABC/openabc3/forcefields' # path of openabc/forcefields
+__location__ = '/.../openabc/forcefields' # path of openabc/forcefields
 
 class SMOGHPSModel(MOFFMRGModel):
     # rewrite add_contacts, deprecate add_elec_switch, replace with add_elec

@@ -98,13 +98,8 @@ class SMOGHPSModel(MOFFMRGModel):
         charges = self.atoms['charge'].tolist()
         # convert charges from MOFF to HPS
         for i in range(len(charges)):
-            if charges[i]<0:
-                charges[i]=0
-            elif charges[i]==0.25:
-                charges[i]=1.0
-        print('Charges:')
-        print(charges)
-        print(np.sum(charges))
+            if charges[i]==0.25:
+                charges[i]=0.5
         force = functional_terms.dh_elec_term(charges, self.exclusions, self.use_pbc, ldby, dielectric_water,
                                               cutoff, force_group)
         self.system.addForce(force)
@@ -122,14 +117,14 @@ platform_name = 'CUDA'
 print('Successful import')
 
 # start from predicted PDB
-PopZ_parser = MOFFParser.from_atomistic_pdb('PopZ_FL_trimer_AF.pdb', 'PopZ_FL_trimer_CA.pdb')
+PopZ_parser = MOFFParser.from_atomistic_pdb('PopZ_FL_trimer_d6_AF.pdb', 'PopZ_FL_trimer_d6_CA.pdb')
 
-# PopZ_FL_trimer: we want to model the complex by rigidizing H3-H4 as a complex, and keeping H1 and H2 as a flexible helix.
+# PopZ_FL_trimer_d6: we want to model the complex by rigidizing H3-H4 as a complex, and keeping H1 and H2 as a flexible helix.
 # Note: indexing goes across all residues, regardless of chain and starts at 0
 old_native_pairs = PopZ_parser.native_pairs.copy()
 new_native_pairs = pd.DataFrame(columns=old_native_pairs.columns)
 # full length of an individual monomer
-Nres=177
+Nres=171
 # keep interactions between H3-H4 across chains
 H3H4_1=np.arange(135,171)
 print(H3H4_1)
@@ -168,7 +163,7 @@ n_mol = 100
 box_a=100
 box_b=100
 box_c=100
-insert_molecules('PopZ_FL_trimer_CA.pdb', 'start.pdb', n_mol, box=[box_a, box_b, box_c])
+insert_molecules('PopZ_FL_trimer_d6_CA.pdb', 'start.pdb', n_mol, box=[box_a, box_b, box_c])
 
 
 # set up protein model
@@ -182,7 +177,7 @@ top = app.PDBFile('start.pdb').getTopology()
 condensate.create_system(top, box_a=box_a, box_b=box_b, box_c=box_c, remove_cmmotion=True)
 # setup variables necessary for simulations
 T=150
-salt_concentration = 150*0.001
+salt_concentration = 600*0.001
 eps_w=80
 eps_0=8.8541878128*(10**-12)
 R=8.31446261815324
@@ -224,4 +219,4 @@ state = condensate.simulation.context.getState(getPositions=True, getVelocities=
 with open('npt.xml', 'w') as f:
     f.write(mm.XmlSerializer.serialize(state))
 # save final system
-condensate.save_system('PopZ_FL_trimer_system.xml')
+condensate.save_system('PopZ_FL_trimer_d6_system.xml')

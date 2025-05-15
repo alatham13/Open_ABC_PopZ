@@ -70,3 +70,17 @@ inter_map.txt - inter-molecular contact map from slab simulation. Ordered accord
 intra_map.txt - intra-molecular contact map from slab simulation. Ordered according to protein sequence
 
 (Note: These contact maps need to be appropriately normalized before plotting. This is done by plot_contacts_log2.m, which normalizes and plots the contact map, with intra molecular contacts on the upper diagonal and intermolecular contacts on the bottom diagonal)
+
+2. nematic_order.py - Function to calculate the nematic ordrer parameter from slab simulations of PopZ trimers
+
+Outputs:
+
+nematic_order.txt - nematic order parameter for each timestep in the simulation
+
+nematic_director.txt - vector of nematic order for each timestep in the simulation
+
+PopZ_orientation.png - image of PopZ vectors from the last frame in the simulation. This is an example of what is input to the freud.order.Nematic function
+
+local_order.txt - nematic order parameter calculated locally around each trimer in the simulation
+
+local_chains.txt - average number of chains used to calculate the local nematic order parameter for each timestep in the simulation
