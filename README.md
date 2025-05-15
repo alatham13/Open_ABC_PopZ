@@ -2,7 +2,7 @@
 By Andrew P. Latham
 If you use this code, please cite:
 
-Scholl et al., in preparation.
+Scholl D, Boyd T, Latham AP, Salazar A, Khan A, Boeynaems S, Holehouse AS, Lander GC, Sali A, Park D, Deniz AA, Lasker K Cellular Function of a Biomolecular Condensate Is Determined by Its Ultrastructure. bioRxiv 2024, DOI:10.1101/2024.12.27.630454.
 
 Liu S, Wang C, Latham AP, Ding X, Zhang B OpenABC enables flexible, simplified, and efficient GPU accelerated simulations of biomolecular condensates. PLoS Comput Biol 2023, 19, e1011442.
 
