@@ -71,7 +71,7 @@ intra_map.txt - intra-molecular contact map from slab simulation. Ordered accord
 
 (Note: These contact maps need to be appropriately normalized before plotting. This is done by plot_contacts_log2.m, which normalizes and plots the contact map, with intra molecular contacts on the upper diagonal and intermolecular contacts on the bottom diagonal)
 
-2. nematic_order.py - Function to calculate the nematic ordrer parameter from slab simulations of PopZ trimers
+3. nematic_order.py - Function to calculate the nematic ordrer parameter from slab simulations of PopZ trimers
 
 Outputs:
 
