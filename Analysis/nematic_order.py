@@ -257,6 +257,7 @@ def nematic_order_parameter(dcd_file,pdb_file,mass_xml,npt_xml,nchain,start,cuto
             l_list[::-1].sort()
             l_list.resize((4))
             Z_mat2[count,:]=l_list
+            print(Z_mat2[count,:])
             for i in range(0, l2):
                 index = atoms_in_cluser[i]
                 Z1 = Z1 + com2[index]
@@ -303,17 +304,26 @@ def nematic_order_parameter(dcd_file,pdb_file,mass_xml,npt_xml,nchain,start,cuto
                 # make a 3D plot of the system
                 fig = plt.figure()
                 ax = fig.add_subplot(111, projection="3d")
+                # Plot as quiver3D. Put Z-axis (long axis) on X, X on Y, and Y on Z.
+                # Normalize Z so that the middle of the box is at 0, and convert Ang to nm
                 ax.quiver3D(
-                    pos[:, 0],
-                    pos[:, 1],
-                    pos[:, 2],
+                    (pos[:, 2]-box[2]/2)/10,
+                    (pos[:, 0])/10,
+                    (pos[:, 1])/10,
                     orientations[:, 0],
                     orientations[:, 1],
                     orientations[:, 2],
-                    length=30,
-                    color="k",
+                    length=4,
+                    pivot='middle',
+                    normalize=True,
+                    arrow_length_ratio=0.3,
+                    color="k"
                 )
-                fig.savefig('PopZ_orientation.png')
+                ax.set_xlabel("Box length [nm]", fontname="Helvetica", fontsize=16)
+                ax.set_ylabel("X Axis [nm]", fontname="Helvetica", fontsize=16)
+                ax.set_zlabel("Y Axis [nm]", fontname="Helvetica", fontsize=16)
+                fig.savefig('PopZ_orientation.png',transparent=True,format='png',dpi=1200)
+                fig.savefig('PopZ_orientation.eps',transparent=True,format='eps',dpi=1200)
             
             # Calculate the local nematic order parameter -----------------------------------------------------------------------------------------
             com_dist_mat = distance_array(pos, pos, box)
@@ -338,7 +348,6 @@ def nematic_order_parameter(dcd_file,pdb_file,mass_xml,npt_xml,nchain,start,cuto
             local_chains[count]=numpy.mean(N_neighbors)
             
             count = count + 1
-
     
     # Save nematic order parameter and director to a new file
     numpy.savetxt('nematic_order.txt',nematic_order)
